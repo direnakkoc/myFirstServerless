@@ -1,0 +1,58 @@
+
+
+service: devsalarydiren
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  environment:
+    tableName: ${self:custom.tableName}
+  iamRoleStatements:
+      - Effect: Allow
+        Action:
+              - dynamodb:*
+        Resource: '*'
+
+
+functions:
+  hello:
+    handler: handler.hello
+  getItem: 
+    handler: lamdas/endpoints/getItem.handler
+    events:
+      - http:
+         path: get-item/{ID}
+         method: GET
+         cors: true
+  createItem: 
+    handler: lamdas/endpoints/createItem.handler
+    events:
+      - http:
+         path: create-item/{ID}
+         method: POST
+         cors: true
+
+plugins:
+  - serverless-webpack
+
+package:
+  individually: true
+
+custom:
+  tableName: dev-salary-diren
+
+resources:
+  Resources:
+    MyFirstDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: N 
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
