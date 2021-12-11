@@ -33,6 +33,20 @@ functions:
          path: create-item/{ID}
          method: POST
          cors: true
+  deleteItem: 
+    handler: lamdas/endpoints/deleteItem.handler
+    events:
+      - http:
+         path: delete-item/{ID}
+         method: DELETE
+         cors: true
+  getItems: 
+    handler: lamdas/endpoints/getItems.handler
+    events:
+      - http:
+         path: get-items
+         method: GET
+         cors: true
 
 plugins:
   - serverless-webpack
